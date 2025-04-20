@@ -11,14 +11,28 @@ public class Player {
     private int y;
     private int speed;
     BufferedImage spriteSheet;
-    BufferedImage[][] sprites = new BufferedImage[1][1];
-    private int selectedRow = 0;
-    private int selectedColumn = 0;
+    BufferedImage[][] sprites;
+    private int selectedRow;
+    private int selectedColumn;
+    private int spriteWidth;
+    private int spriteHeight;
+    private int widthModifier;
+    private int heightModifier;
+    private int widthScaler;
+    private int heightScaler;
+    private int runFrame;
 
     public Player(KeyInputs keyH, MouseInputs mouseH, GamePanel gp){
         this.gp = gp;
         this.keyH = keyH;
         this.mouseH = mouseH;
+        selectedRow = 0;
+        selectedColumn = 0;
+        widthModifier = 0;
+        heightModifier = 0;
+        widthScaler = 1;
+        heightScaler = 1;
+        runFrame = 0;
         setDefaultValues();
         getPlayerImage();
     }
@@ -31,8 +45,8 @@ public class Player {
         try {
             spriteSheet = ImageIO.read(new File("Img\\Terrible Knight\\atlas.png"));
 
-            int spriteWidth = 96;
-            int spriteHeight = 128;
+            spriteWidth = 128;
+            spriteHeight = 96;
             int rows = spriteSheet.getHeight() / spriteHeight;
             int cols = spriteSheet.getWidth() / spriteWidth;
 
@@ -56,13 +70,32 @@ public class Player {
         }
         if(keyH.rightPressed){
             x+=speed;
+            widthModifier = 0;
+            widthScaler = 1;
+            selectedRow = 7;
+            selectedColumn = runFrame;
+            if(runFrame == 11){
+                runFrame = 0;
+            }
+            else {
+                runFrame++;
+            }
         }
         if(keyH.leftPressed){
             x-=speed;
+            widthModifier = spriteWidth;
+            widthScaler = -1;
+            selectedRow = 7;
+            selectedColumn = runFrame;
+            if(runFrame == 11){
+                runFrame = 0;
+            }
+            else {
+                runFrame++;
+            }
         }
     }
     public void draw(Graphics2D g2){
-
-        g2.drawImage(sprites[selectedRow][selectedColumn],x,y, null);
+        g2.drawImage(sprites[selectedRow][selectedColumn],x + widthModifier,y + heightModifier, spriteWidth * widthScaler, spriteHeight * heightScaler,null);
     }
 }
