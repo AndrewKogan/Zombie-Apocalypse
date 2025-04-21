@@ -21,6 +21,10 @@ public class Player {
     private int widthScaler;
     private int heightScaler;
     private int runFrame;
+    private int idleFrame;
+    private int attackFrame;
+    private int frameCount;
+    private boolean lockMovement;
 
     public Player(KeyInputs keyH, MouseInputs mouseH, GamePanel gp){
         this.gp = gp;
@@ -30,9 +34,13 @@ public class Player {
         selectedColumn = 0;
         widthModifier = 0;
         heightModifier = 0;
-        widthScaler = 1;
-        heightScaler = 1;
+        widthScaler = 2;
+        heightScaler = 2;
         runFrame = 0;
+        idleFrame = 0;
+        frameCount = 0;
+        attackFrame = 0;
+        lockMovement = false;
         setDefaultValues();
         getPlayerImage();
     }
@@ -62,36 +70,69 @@ public class Player {
         }
     }
     public void update(){
-        if(keyH.upPressed){
-            y-=speed;
-        }
-        if(keyH.downPressed){
-            y+=speed;
-        }
-        if(keyH.rightPressed){
-            x+=speed;
-            widthModifier = 0;
-            widthScaler = 1;
-            selectedRow = 7;
-            selectedColumn = runFrame;
-            if(runFrame == 11){
-                runFrame = 0;
-            }
-            else {
-                runFrame++;
+        frameCount++;
+        if(frameCount%4==0) {
+            if (attackFrame == 5) {
+                attackFrame = 0;
+                lockMovement = false;
+            } else if (attackFrame != 0) {
+                attackFrame++;
+                selectedColumn = attackFrame;
             }
         }
-        if(keyH.leftPressed){
-            x-=speed;
-            widthModifier = spriteWidth;
-            widthScaler = -1;
-            selectedRow = 7;
-            selectedColumn = runFrame;
-            if(runFrame == 11){
-                runFrame = 0;
+        if(!lockMovement) {
+            if (keyH.upPressed) {
+                y -= speed;
             }
-            else {
-                runFrame++;
+            if (keyH.downPressed) {
+                y += speed;
+            }
+            if (!(keyH.rightPressed && keyH.leftPressed)) {
+                if (keyH.rightPressed) {
+                    x += speed;
+                    widthModifier = 0;
+                    widthScaler = 2;
+                    selectedRow = 7;
+                    selectedColumn = runFrame;
+                    if (frameCount % 2 == 0) {
+                        if (runFrame == 11) {
+                            runFrame = 0;
+                        } else {
+                            runFrame++;
+                        }
+                    }
+                }
+                if (keyH.leftPressed) {
+                    x -= speed;
+                    widthModifier = 2 * spriteWidth;
+                    widthScaler = -2;
+                    selectedRow = 7;
+                    selectedColumn = runFrame;
+                    if (frameCount % 2 == 0) {
+                        if (runFrame == 11) {
+                            runFrame = 0;
+                        } else {
+                            runFrame++;
+                        }
+                    }
+                }
+            }
+            if (!(keyH.leftPressed || keyH.rightPressed)) {
+                selectedRow = 0;
+                selectedColumn = idleFrame;
+                if (frameCount % 12 == 0) {
+                    if (idleFrame == 3) {
+                        idleFrame = 0;
+                    } else {
+                        idleFrame++;
+                    }
+                }
+            }
+            if(mouseH.leftClick){
+                selectedRow = 8;
+                selectedColumn = attackFrame;
+                attackFrame++;
+                lockMovement = true;
             }
         }
     }
