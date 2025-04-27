@@ -94,7 +94,7 @@ public class Player {
                     widthScaler = 2;
                     selectedRow = 7;
                     selectedColumn = runFrame;
-                    if (frameCount % 2 == 0) {
+                    if (frameCount % 5 == 0) {
                         if (runFrame == 11) {
                             runFrame = 0;
                         } else {
@@ -108,7 +108,7 @@ public class Player {
                     widthScaler = -2;
                     selectedRow = 7;
                     selectedColumn = runFrame;
-                    if (frameCount % 2 == 0) {
+                    if (frameCount % 5 == 0) {
                         if (runFrame == 11) {
                             runFrame = 0;
                         } else {
@@ -133,6 +133,7 @@ public class Player {
                 selectedColumn = attackFrame;
                 attackFrame++;
                 lockMovement = true;
+                mouseH.leftClick=false;
             }
         }
     }

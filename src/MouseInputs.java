@@ -5,11 +5,6 @@ public class MouseInputs implements MouseListener {
     public boolean leftClick, rightClick;
     @Override
     public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
         int mouseCode = e.getButton();
         if(mouseCode == 1){
             leftClick=true;
@@ -20,14 +15,13 @@ public class MouseInputs implements MouseListener {
     }
 
     @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
     public void mouseReleased(MouseEvent e) {
-        int mouseCode = e.getButton();
-        if(mouseCode == 1){
-            leftClick=false;
-        }
-        if(mouseCode == 3){
-            rightClick=false;
-        }
+
     }
 
     @Override
