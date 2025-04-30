@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class Player {
+public class Player extends Entity{
     private KeyInputs keyH;
     private MouseInputs mouseH;
     private GamePanel gp;
@@ -27,9 +27,12 @@ public class Player {
     private boolean lockMovement;
 
     public Player(KeyInputs keyH, MouseInputs mouseH, GamePanel gp){
+        super(gp,4,5,12,new File("Img\\Terrible Knight\\atlas.png"),128,96);
         this.gp = gp;
         this.keyH = keyH;
         this.mouseH = mouseH;
+        spriteHeight=96;
+        spriteWidth=128;
         selectedRow = 0;
         selectedColumn = 0;
         widthModifier = 0;
@@ -41,34 +44,17 @@ public class Player {
         frameCount = 0;
         attackFrame = 0;
         lockMovement = false;
-        setDefaultValues();
-        getPlayerImage();
+        sprites=getSpriteImage();
     }
+
+    @Override
     public void setDefaultValues(){
         x = 100;
         y = 100;
         speed = 4;
     }
-    public void getPlayerImage(){
-        try {
-            spriteSheet = ImageIO.read(new File("Img\\Terrible Knight\\atlas.png"));
 
-            spriteWidth = 128;
-            spriteHeight = 96;
-            int rows = spriteSheet.getHeight() / spriteHeight;
-            int cols = spriteSheet.getWidth() / spriteWidth;
-
-            sprites = new BufferedImage[rows][cols];
-
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    sprites[row][col] = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    @Override
     public void update(){
         frameCount++;
         if(frameCount%4==0) {
@@ -117,7 +103,7 @@ public class Player {
                     }
                 }
             }
-            if (!(keyH.leftPressed || keyH.rightPressed)) {
+            if (!(keyH.leftPressed || keyH.rightPressed) || (keyH.leftPressed && keyH.rightPressed)) {
                 selectedRow = 0;
                 selectedColumn = idleFrame;
                 if (frameCount % 12 == 0) {
@@ -137,6 +123,8 @@ public class Player {
             }
         }
     }
+
+    @Override
     public void draw(Graphics2D g2){
         g2.drawImage(sprites[selectedRow][selectedColumn],x + widthModifier,y + heightModifier, spriteWidth * widthScaler, spriteHeight * heightScaler,null);
     }
